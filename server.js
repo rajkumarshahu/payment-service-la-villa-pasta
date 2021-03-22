@@ -15,11 +15,29 @@ const app = express();
 app.use(express.json());
 
 // Enable CORS
-app.use(cors({
-	origin: '',
-	method: 'GET, POST, PUT, DELETE,  PATCH, HEAD',
-	credentials: true
-}));
+// app.use(cors({
+// 	origin: '',
+// 	method: 'GET, POST, PUT, DELETE,  PATCH, HEAD',
+// 	credentials: true
+// }));
+
+
+app.use(function (req, res, next) {
+	res.header('Access-Control-Allow-Origin', '*');
+	res.header(
+		'Access-Control-Allow-Headers',
+		'Origin, X-Requested-With, Content-Type, Accept, Authorization'
+	);
+	if (req.method === 'OPTIONS') {
+		res.header(
+			'Access-Control-Allow-Headers',
+			'Origin, X-Requested-With, Content-Type, Accept, Authorization'
+		);
+		res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH');
+		return res.status(200).json({});
+	}
+	next();
+});
 
 // Set static folder
 app.use(express.static(path.join(__dirname, 'public')));
@@ -34,7 +52,7 @@ const PORT = process.env.PORT || 4000;
 const server = app.listen(
 	PORT,
 	console.log(
-		`Server is running in ${process.env.NODE_ENV} mode on port ${PORT}`.yellow
+		`Payment Service Server is running in ${process.env.NODE_ENV} mode on port ${PORT}`.green
 			.bold
 	)
 );
